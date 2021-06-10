@@ -20,6 +20,8 @@ run:
 	  $(TASK)
 	$(MV) $(OSFLOW)/$(BOARD)/$(BITSTREAM) ./
 
+# Boards
+
 Fomu:
 ifeq ($(DESIGN),Minimal)
 	$(eval IMEM_SRC := ../../../rtl/core/neorv32_imem.vhd)
@@ -31,10 +33,18 @@ endif
 	  NEORV32_MEM_SRC="${IMEM_SRC} ../devices/ice40/neorv32_dmem.ice40up_spram.vhd" \
 	  run
 
+TinyFPGA_BX:
+	$(MAKE) \
+	  BITSTREAM=neorv32_$(BOARD)_$(DESIGN).bit \
+	  NEORV32_MEM_SRC="../../../rtl/core/neorv32_imem.vhd ../devices/ice40/neorv32_dmem.alt.vhd" \
+	  run
+
 UPduino_v3:
 	$(MAKE) \
 	  BITSTREAM=neorv32_$(BOARD)_$(DESIGN).bit \
 	  run
+
+# Examples
 
 Minimal:
 	$(MAKE) \
