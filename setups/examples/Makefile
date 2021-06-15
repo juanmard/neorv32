@@ -8,7 +8,7 @@ TASK := clean $(BITSTREAM)
 FOMU_REV ?= pvt
 
 ifndef BOARD
-$(error BOARD needs to be set to 'Fomu' or 'UPDuino_v3'!)
+$(error BOARD needs to be set to 'Fomu', 'TinyFPGA_BX', 'iCESugar' or 'UPDuino_v3'!)
 endif
 
 run:
@@ -37,6 +37,17 @@ TinyFPGA_BX:
 	$(MAKE) \
 	  BITSTREAM=neorv32_$(BOARD)_$(DESIGN).bit \
 	  NEORV32_MEM_SRC="../../../rtl/core/neorv32_imem.vhd ../devices/ice40/neorv32_dmem.alt.vhd" \
+	  run
+
+iCESugar:
+ifeq ($(DESIGN),Minimal)
+	$(eval IMEM_SRC := ../../../rtl/core/neorv32_imem.vhd)
+else
+	$(eval IMEM_SRC := ../devices/ice40/neorv32_imem.ice40up_spram.vhd)
+endif
+	$(MAKE) \
+	  BITSTREAM=neorv32_$(BOARD)_$(DESIGN).bit \
+	  NEORV32_MEM_SRC="${IMEM_SRC} ../devices/ice40/neorv32_dmem.ice40up_spram.vhd" \
 	  run
 
 UPduino_v3:
