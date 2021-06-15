@@ -73,11 +73,11 @@ entity neorv32_ProcessorTop_UP5KDemo is
 
     -- Internal Instruction memory --
     MEM_INT_IMEM_EN              : boolean := true;    -- implement processor-internal instruction memory
-    MEM_INT_IMEM_SIZE            : natural := 64*1024; -- size of processor-internal instruction memory in bytes
+    MEM_INT_IMEM_SIZE            : natural := 8*1024; -- size of processor-internal instruction memory in bytes
 
     -- Internal Data memory --
     MEM_INT_DMEM_EN              : boolean := true;    -- implement processor-internal data memory
-    MEM_INT_DMEM_SIZE            : natural := 64*1024; -- size of processor-internal data memory in bytes
+    MEM_INT_DMEM_SIZE            : natural := 4*1024; -- size of processor-internal data memory in bytes
 
     -- Internal Cache memory --
     ICACHE_EN                    : boolean := false;  -- implement instruction cache
@@ -166,7 +166,7 @@ begin
   generic map (
     -- General --
     CLOCK_FREQUENCY              => CLOCK_FREQUENCY,  -- clock frequency of clk_i in Hz
-    INT_BOOTLOADER_EN            => true,             -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
+    INT_BOOTLOADER_EN            => false,             -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
     USER_CODE                    => USER_CODE,        -- custom user code
     HW_THREAD_ID                 => HW_THREAD_ID,     -- hardware thread id (32-bit)
 

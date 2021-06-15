@@ -70,7 +70,7 @@ begin
   generic map (
     -- General --
     CLOCK_FREQUENCY              => 100000000,   -- clock frequency of clk_i in Hz
-    INT_BOOTLOADER_EN            => true,        -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
+    INT_BOOTLOADER_EN            => false,        -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
     USER_CODE                    => x"00000000", -- custom user code
     HW_THREAD_ID                 => 0,           -- hardware thread id (hartid)
     -- On-Chip Debugger (OCD) --
@@ -97,10 +97,10 @@ begin
     HPM_CNT_WIDTH                => 40,          -- total size of HPM counters (0..64)
     -- Internal Instruction memory --
     MEM_INT_IMEM_EN              => true,        -- implement processor-internal instruction memory
-    MEM_INT_IMEM_SIZE            => 16*1024,     -- size of processor-internal instruction memory in bytes
+    MEM_INT_IMEM_SIZE            => 8*1024,     -- size of processor-internal instruction memory in bytes
     -- Internal Data memory --
     MEM_INT_DMEM_EN              => true,        -- implement processor-internal data memory
-    MEM_INT_DMEM_SIZE            => 8*1024,      -- size of processor-internal data memory in bytes
+    MEM_INT_DMEM_SIZE            => 4*1024,      -- size of processor-internal data memory in bytes
     -- Internal Cache memory --
     ICACHE_EN                    => false,       -- implement instruction cache
     ICACHE_NUM_BLOCKS            => 4,           -- i-cache: number of blocks (min 1), has to be a power of 2

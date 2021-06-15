@@ -5,10 +5,6 @@ NEORV32_PKG := $(RTL_CORE_SRC)/neorv32_package.vhd
 NEORV32_APP_SRC := \
   $(RTL_CORE_SRC)/neorv32_application_image.vhd \
 
-NEORV32_MEM_SRC := \
-  ../devices/ice40/neorv32_imem.ice40up_spram.vhd \
-  ../devices/ice40/neorv32_dmem.ice40up_spram.vhd
-
 NEORV32_CORE_SRC := \
   $(RTL_CORE_SRC)/neorv32_bootloader_image.vhd \
   $(RTL_CORE_SRC)/neorv32_boot_rom.vhd \

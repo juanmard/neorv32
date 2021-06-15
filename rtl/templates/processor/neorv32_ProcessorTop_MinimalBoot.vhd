@@ -71,7 +71,7 @@ entity neorv32_ProcessorTop_MinimalBoot is
 
     -- Internal Instruction memory --
     MEM_INT_IMEM_EN              : boolean := true;    -- implement processor-internal instruction memory
-    MEM_INT_IMEM_SIZE            : natural := 4*1024; -- size of processor-internal instruction memory in bytes
+    MEM_INT_IMEM_SIZE            : natural := 8*1024; -- size of processor-internal instruction memory in bytes
 
     -- Internal Data memory --
     MEM_INT_DMEM_EN              : boolean := true;    -- implement processor-internal data memory

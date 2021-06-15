@@ -43,7 +43,7 @@ entity neorv32_ProcessorTop_stdlogic is
   generic (
     -- General --
     CLOCK_FREQUENCY              : natural := 0;      -- clock frequency of clk_i in Hz
-    INT_BOOTLOADER_EN            : boolean := true;   -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
+    INT_BOOTLOADER_EN            : boolean := false;   -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
     USER_CODE                    : std_logic_vector(31 downto 0) := x"00000000"; -- custom user code
     HW_THREAD_ID                 : natural := 0;      -- hardware thread id (32-bit)
     -- On-Chip Debugger (OCD) --
@@ -70,10 +70,10 @@ entity neorv32_ProcessorTop_stdlogic is
     HPM_CNT_WIDTH                : natural := 40;     -- total size of HPM counters (0..64)
     -- Internal Instruction memory --
     MEM_INT_IMEM_EN              : boolean := true;   -- implement processor-internal instruction memory
-    MEM_INT_IMEM_SIZE            : natural := 16*1024; -- size of processor-internal instruction memory in bytes
+    MEM_INT_IMEM_SIZE            : natural := 8*1024; -- size of processor-internal instruction memory in bytes
     -- Internal Data memory --
     MEM_INT_DMEM_EN              : boolean := true;   -- implement processor-internal data memory
-    MEM_INT_DMEM_SIZE            : natural := 8*1024; -- size of processor-internal data memory in bytes
+    MEM_INT_DMEM_SIZE            : natural := 4*1024; -- size of processor-internal data memory in bytes
     -- Internal Cache memory --
     ICACHE_EN                    : boolean := false;  -- implement instruction cache
     ICACHE_NUM_BLOCKS            : natural := 4;      -- i-cache: number of blocks (min 1), has to be a power of 2
