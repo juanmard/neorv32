@@ -58,7 +58,7 @@ MEMORY
 {
 /* section sizes have to be a multiple of 4-bytes */
 
-  ram  (rwx) : ORIGIN = 0x80000000, LENGTH = 8*1024
+  ram  (rwx) : ORIGIN = 0x80000000, LENGTH = 4*1024
 
 /* rom and iodev sections should NOT be modified by the user at all! */
 /* rom section: first value of ORIGIN/LENGTH => bootloader ROM; second value of ORIGIN/LENGTH => instruction memory */
