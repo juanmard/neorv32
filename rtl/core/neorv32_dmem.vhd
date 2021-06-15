@@ -63,21 +63,17 @@ architecture neorv32_dmem_rtl of neorv32_dmem is
   constant lo_abb_c : natural := index_size_f(DMEM_SIZE); -- low address boundary bit
 
   -- local signals --
-  signal acc_en : std_ulogic;
-  signal rdata  : std_ulogic_vector(31 downto 0);
-  signal rden   : std_ulogic;
-  signal addr   : std_ulogic_vector(index_size_f(DMEM_SIZE/4)-1 downto 0);
+  signal addr    : std_ulogic_vector(index_size_f(DMEM_SIZE/4)-1 downto 0);
+  signal acc_en  : std_ulogic;
+  signal rden    : std_ulogic;
+  signal wren    : std_ulogic;
+  signal rden_ff : std_ulogic;
+  signal rdata   : std_ulogic_vector(31 downto 0);
 
   -- -------------------------------------------------------------------------------------------------------------- --
   -- The memory (RAM) is built from 4 individual byte-wide memories b0..b3, since some synthesis tools have         --
   -- problems with 32-bit memories that provide dedicated byte-enable signals AND/OR with multi-dimensional arrays. --
   -- -------------------------------------------------------------------------------------------------------------- --
-
-  -- RAM - not initialized at all --
-  signal mem_ram_b0 : mem8_t(0 to DMEM_SIZE/4-1);
-  signal mem_ram_b1 : mem8_t(0 to DMEM_SIZE/4-1);
-  signal mem_ram_b2 : mem8_t(0 to DMEM_SIZE/4-1);
-  signal mem_ram_b3 : mem8_t(0 to DMEM_SIZE/4-1);
 
   -- read data --
   signal mem_ram_b0_rd, mem_ram_b1_rd, mem_ram_b2_rd, mem_ram_b3_rd : std_ulogic_vector(7 downto 0);
@@ -88,36 +84,39 @@ begin
   -- -------------------------------------------------------------------------------------------
   acc_en <= '1' when (addr_i(hi_abb_c downto lo_abb_c) = DMEM_BASE(hi_abb_c downto lo_abb_c)) else '0';
   addr   <= addr_i(index_size_f(DMEM_SIZE/4)+1 downto 2); -- word aligned
+  rden   <= acc_en and rden_i;
+  wren   <= acc_en and wren_i;
 
 
   -- Memory Access --------------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
   mem_access: process(clk_i)
+    -- RAM - not initialized at all --
+    variable mem_ram_b0 : mem8_t(0 to DMEM_SIZE/4-1);
+    variable mem_ram_b1 : mem8_t(0 to DMEM_SIZE/4-1);
+    variable mem_ram_b2 : mem8_t(0 to DMEM_SIZE/4-1);
+    variable mem_ram_b3 : mem8_t(0 to DMEM_SIZE/4-1);
   begin
     if rising_edge(clk_i) then
-      -- this RAM style should not require "no_rw_check" attributes as the read-after-write behavior
-      -- is intended to be defined implicitly via the if-WRITE-else-READ construct
-      if (acc_en = '1') then -- reduce switching activity when not accessed
-        if (wren_i = '1') and (ben_i(0) = '1') then -- byte 0
-          mem_ram_b0(to_integer(unsigned(addr))) <= data_i(07 downto 00);
-        else
-          mem_ram_b0_rd <= mem_ram_b0(to_integer(unsigned(addr)));
-        end if;
-        if (wren_i = '1') and (ben_i(1) = '1') then -- byte 1
-          mem_ram_b1(to_integer(unsigned(addr))) <= data_i(15 downto 08);
-        else
-          mem_ram_b1_rd <= mem_ram_b1(to_integer(unsigned(addr)));
-        end if;
-        if (wren_i = '1') and (ben_i(2) = '1') then -- byte 2
-          mem_ram_b2(to_integer(unsigned(addr))) <= data_i(23 downto 16);
-        else
-          mem_ram_b2_rd <= mem_ram_b2(to_integer(unsigned(addr)));
-        end if;
-        if (wren_i = '1') and (ben_i(3) = '1') then -- byte 3
-          mem_ram_b3(to_integer(unsigned(addr))) <= data_i(31 downto 24);
-        else
-          mem_ram_b3_rd <= mem_ram_b3(to_integer(unsigned(addr)));
-        end if;
+      -- read access --
+      if (rden = '1') then
+        mem_ram_b3_rd <= mem_ram_b3(to_integer(unsigned(addr)));
+        mem_ram_b2_rd <= mem_ram_b2(to_integer(unsigned(addr)));
+        mem_ram_b1_rd <= mem_ram_b1(to_integer(unsigned(addr)));
+        mem_ram_b0_rd <= mem_ram_b0(to_integer(unsigned(addr)));
+      end if;
+      -- write --
+      if (wren = '1') and (ben_i(0) = '1') then -- byte 0
+        mem_ram_b0(to_integer(unsigned(addr))) := data_i(07 downto 00);
+      end if;
+      if (wren = '1') and (ben_i(1) = '1') then -- byte 1
+        mem_ram_b1(to_integer(unsigned(addr))) := data_i(15 downto 08);
+      end if;
+      if (wren = '1') and (ben_i(2) = '1') then -- byte 2
+        mem_ram_b2(to_integer(unsigned(addr))) := data_i(23 downto 16);
+      end if;
+      if (wren = '1') and (ben_i(3) = '1') then -- byte 3
+        mem_ram_b3(to_integer(unsigned(addr))) := data_i(31 downto 24);
       end if;
     end if;
   end process mem_access;
@@ -128,8 +127,8 @@ begin
   bus_feedback: process(clk_i)
   begin
     if rising_edge(clk_i) then
-      rden  <= acc_en and rden_i;
-      ack_o <= acc_en and (rden_i or wren_i);
+      rden_ff <= rden;
+      ack_o   <= rden or wren;
     end if;
   end process bus_feedback;
 
@@ -137,7 +136,7 @@ begin
   rdata <= mem_ram_b3_rd & mem_ram_b2_rd & mem_ram_b1_rd & mem_ram_b0_rd;
 
   -- output gate --
-  data_o <= rdata when (rden = '1') else (others => '0');
+  data_o <= rdata when (rden_ff = '1') else (others => '0');
 
 
 end neorv32_dmem_rtl;
