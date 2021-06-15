@@ -41,7 +41,7 @@ library neorv32;
 entity neorv32_ProcessorTop_MinimalBoot is
   generic (
     CLOCK_FREQUENCY              : natural := 0;      -- clock frequency of clk_i in Hz
-    INT_BOOTLOADER_EN            : boolean := true;   -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
+    INT_BOOTLOADER_EN            : boolean := false;   -- boot configuration: true = boot explicit bootloader; false = boot from int/ext (I)MEM
     USER_CODE                    : std_ulogic_vector(31 downto 0) := x"00000000";  -- custom user code
     HW_THREAD_ID                 : natural := 0;      -- hardware thread id (32-bit)
 
@@ -71,11 +71,11 @@ entity neorv32_ProcessorTop_MinimalBoot is
 
     -- Internal Instruction memory --
     MEM_INT_IMEM_EN              : boolean := true;    -- implement processor-internal instruction memory
-    MEM_INT_IMEM_SIZE            : natural := 64*1024; -- size of processor-internal instruction memory in bytes
+    MEM_INT_IMEM_SIZE            : natural := 4*1024; -- size of processor-internal instruction memory in bytes
 
     -- Internal Data memory --
     MEM_INT_DMEM_EN              : boolean := true;    -- implement processor-internal data memory
-    MEM_INT_DMEM_SIZE            : natural := 64*1024; -- size of processor-internal data memory in bytes
+    MEM_INT_DMEM_SIZE            : natural := 4*1024; -- size of processor-internal data memory in bytes
 
     -- Internal Cache memory --
     ICACHE_EN                    : boolean := false;  -- implement instruction cache

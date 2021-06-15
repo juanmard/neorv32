@@ -34,13 +34,15 @@ NEORV32_CORE_SRC := \
   $(RTL_CORE_SRC)/neorv32_spi.vhd \
   $(RTL_CORE_SRC)/neorv32_sysinfo.vhd \
   $(RTL_CORE_SRC)/neorv32_top.vhd \
+  $(RTL_CORE_SRC)/neorv32_dmem.vhd \
+  $(RTL_CORE_SRC)/neorv32_imem.vhd \
   $(RTL_CORE_SRC)/neorv32_trng.vhd \
   $(RTL_CORE_SRC)/neorv32_twi.vhd \
   $(RTL_CORE_SRC)/neorv32_uart.vhd \
   $(RTL_CORE_SRC)/neorv32_wdt.vhd \
   $(RTL_CORE_SRC)/neorv32_wishbone.vhd
 
-NEORV32_SRC := ${NEORV32_PKG} ${NEORV32_APP_SRC} ${NEORV32_MEM_SRC} ${NEORV32_CORE_SRC}
+NEORV32_SRC := ${NEORV32_PKG} ${NEORV32_APP_SRC} ${NEORV32_CORE_SRC}
 
 ICE40_SRC := \
   ../devices/ice40/sb_ice40_components.vhd
