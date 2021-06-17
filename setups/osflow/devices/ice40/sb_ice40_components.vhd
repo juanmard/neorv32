@@ -123,4 +123,12 @@ package components is
   );
   end component;
 
+  component SB_WARMBOOT
+  port (
+    BOOT : in std_logic;
+    S0   : in std_logic;
+    S1   : in std_logic
+  );
+  end component;
+
 end package components;
