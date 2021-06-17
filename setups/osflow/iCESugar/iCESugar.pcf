@@ -65,7 +65,14 @@ set_io --warn-no-port iCESugarv15_PMOD4[3] 18
 
 
 #> SPI
-set_io --warn-no-port iCESugarv15_SPI_SS   16
-set_io --warn-no-port iCESugarv15_SPI_SCK  15
-set_io --warn-no-port iCESugarv15_SPI_MOSI 17
-set_io --warn-no-port iCESugarv15_SPI_MISO 14
+#set_io --warn-no-port iCESugarv15_SPI_SS   16
+#set_io --warn-no-port iCESugarv15_SPI_SCK  15
+#set_io --warn-no-port iCESugarv15_SPI_MOSI 17
+#set_io --warn-no-port iCESugarv15_SPI_MISO 14
+
+#> SPI
+set_io --warn-no-port flash_csn_o  16
+set_io --warn-no-port flash_sck_o  15
+set_io --warn-no-port flash_sdo_o  17
+set_io --warn-no-port flash_sdi_i  14
+
