@@ -27,8 +27,10 @@ set_io --warn-no-port iCESugarv15_PMOD1A[0] 10
 set_io --warn-no-port iCESugarv15_PMOD1A[1]  6
 set_io --warn-no-port iCESugarv15_PMOD1A[2]  3
 set_io --warn-no-port iCESugarv15_PMOD1A[3] 48
-set_io --warn-no-port iCESugarv15_PMOD1B[0] 47
-set_io --warn-no-port iCESugarv15_PMOD1B[1]  2
+set_io --warn-no-port iCESugarv15_PMOD1B_0  47
+set_io --warn-no-port iCESugarv15_PMOD1B_1   2
+#set_io --warn-no-port iCESugarv15_PMOD1B[0] 47
+#set_io --warn-no-port iCESugarv15_PMOD1B[1]  2
 set_io --warn-no-port iCESugarv15_PMOD1B[2]  4
 set_io --warn-no-port iCESugarv15_PMOD1B[3]  9
 

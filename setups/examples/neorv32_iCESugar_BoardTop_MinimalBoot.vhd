@@ -45,9 +45,11 @@ entity neorv32_iCESugar_BoardTop_MinimalBoot is
     iCESugarv15_LED_R : out std_logic;
     iCESugarv15_LED_G : out std_logic;
     iCESugarv15_LED_B : out std_logic;
+
     -- UART0
-    iCESugarv15_RX : in  std_logic;
-    iCESugarv15_TX : out std_logic;
+    iCESugarv15_PMOD1B_0 : in  std_logic;
+    iCESugarv15_PMOD1B_1 : out  std_logic;
+
     -- USB Pins (which should be statically driven if not being used)
     iCESugarv15_USB_DP    : out std_logic;
     iCESugarv15_USB_DN    : out std_logic;
@@ -144,8 +146,8 @@ begin
     gpio_o     => con_gpio_o,
 
     -- primary UART --
-    uart_txd_o => iCESugarv15_TX, -- UART0 send data
-    uart_rxd_i => iCESugarv15_RX, -- UART0 receive data
+    uart_txd_o => iCESugarv15_PMOD1B_1, -- UART0 send data
+    uart_rxd_i => iCESugarv15_PMOD1B_0, -- UART0 receive data
     uart_rts_o => open, -- hw flow control: UART0.RX ready to receive ("RTR"), low-active, optional
     uart_cts_i => '0',  -- hw flow control: UART0.TX allowed to transmit, low-active, optional
 
@@ -155,7 +157,6 @@ begin
 
   -- IO Connection --------------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-
   RGB_inst: SB_RGBA_DRV
   generic map (
     CURRENT_MODE => "0b1",
@@ -166,12 +167,21 @@ begin
   port map (
     CURREN   => '1',  -- I
     RGBLEDEN => '1',  -- I
-    RGB2PWM  => con_pwm(2),                   -- I - blue  - pwm channel 2
-    RGB1PWM  => con_pwm(1) or con_gpio_o(0),  -- I - red   - pwm channel 1 || BOOT blink
-    RGB0PWM  => con_pwm(0),                   -- I - green - pwm channel 0
+    RGB2PWM  => con_pwm(2) or con_gpio_o(2),    -- I - blue  - pwm channel 2
+    RGB1PWM  => con_pwm(1) or con_gpio_o(1),    -- I - red   - pwm channel 1 || BOOT blink
+    RGB0PWM  => con_pwm(0) or con_gpio_o(0),    -- I - green - pwm channel 0
     RGB2     => iCESugarv15_LED_B,  -- O - blue
     RGB1     => iCESugarv15_LED_R,  -- O - red
     RGB0     => iCESugarv15_LED_G   -- O - green
+  );
+
+  -- WARMBOOT Connection -----------------------------------------------------------------------
+  -- -------------------------------------------------------------------------------------------
+  WBOOT_inst: SB_WARMBOOT
+  port map (
+    BOOT => con_gpio_o(2),
+    S1   => con_gpio_o(1),
+    S0   => con_gpio_o(0)
   );
 
 end architecture;
