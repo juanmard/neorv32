@@ -108,7 +108,7 @@ begin
   port map (
     clki => clki,
 
-    click => con_gpio_o(0),
+    click => con_pwm(0),
 
     usb_dp => usb_dp,
     usb_dn => usb_dn,
@@ -118,56 +118,37 @@ begin
   -- The core of the problem ----------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
 
-  neorv32_inst: entity work.neorv32_ProcessorTop_MinimalBoot
+  neorv32_inst: entity work.neorv32_ProcessorTop_Minimal
   generic map (
-    CLOCK_FREQUENCY => f_clock_c,  -- clock frequency of clk_i in Hz
-    INT_BOOTLOADER_EN => true,
-    MEM_INT_IMEM_EN   => false,
-    MEM_INT_IMEM_SIZE => 8*1024,
-    MEM_INT_DMEM_EN   => true,
-    MEM_INT_DMEM_SIZE => 2*1024,
-
-    IO_UART0_EN => false,
-    IO_PWM_NUM_CH => 0
---    IO_MTIME_EN => false,
---    IO_WDT_EN => false
+    CLOCK_FREQUENCY => f_clock_c  -- clock frequency of clk_i in Hz
   )
   port map (
     -- Global control --
     clk_i      => std_ulogic(pll_clk),
     rstn_i     => std_ulogic(pll_rstn),
 
-    -- GPIO --
-    gpio_o     => con_gpio_o,
-
-    -- primary UART --
-    uart_txd_o => open, -- UART0 send data
-    uart_rxd_i => '0',  -- UART0 receive data
-    uart_rts_o => open, -- hw flow control: UART0.RX ready to receive ("RTR"), low-active, optional
-    uart_cts_i => '0'   -- hw flow control: UART0.TX allowed to transmit, low-active, optional
-
     -- PWM (to on-board RGB LED) --
-    -- pwm_o      => con_pwm
+    pwm_o      => con_pwm
   );
 
   -- IO Connection --------------------------------------------------------------------------
   -- -------------------------------------------------------------------------------------------
-  -- RGB_inst: SB_RGBA_DRV
-  -- generic map (
-  --   CURRENT_MODE => "0b1",
-  --   RGB0_CURRENT => "0b000011",
-  --   RGB1_CURRENT => "0b000011",
-  --   RGB2_CURRENT => "0b000011"
-  -- )
-  -- port map (
-  --   CURREN   => '1',  -- I
-  --   RGBLEDEN => '1',  -- I
-  --   RGB2PWM  => con_pwm(2),                   -- I - blue  - pwm channel 2
-  --   RGB1PWM  => con_pwm(1) or con_gpio_o(0),  -- I - red   - pwm channel 1 || BOOT blink
-  --   RGB0PWM  => con_pwm(0),                   -- I - green - pwm channel 0
-  --   RGB2     => rgb(2),  -- O - blue
-  --   RGB1     => rgb(1),  -- O - red
-  --   RGB0     => rgb(0)   -- O - green
-  -- );
+  RGB_inst: SB_RGBA_DRV
+  generic map (
+    CURRENT_MODE => "0b1",
+    RGB0_CURRENT => "0b000011",
+    RGB1_CURRENT => "0b000011",
+    RGB2_CURRENT => "0b000011"
+  )
+  port map (
+    CURREN   => '1',  -- I
+    RGBLEDEN => '1',  -- I
+    RGB2PWM  => con_pwm(2),                   -- I - blue  - pwm channel 2
+    RGB1PWM  => con_pwm(1),                   -- I - red   - pwm channel 1
+    RGB0PWM  => con_pwm(0),                   -- I - green - pwm channel 0
+    RGB2     => rgb(2),  -- O - blue
+    RGB1     => rgb(1),  -- O - red
+    RGB0     => rgb(0)   -- O - green
+  );
 
 end architecture;
