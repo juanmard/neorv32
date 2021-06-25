@@ -4,7 +4,7 @@ module SB_HFOSC (
   input  CLKHFPU,
   output CLKHF
 );
-  parameter CLKHF_DIV = 2'b00;
+  parameter CLKHF_DIV = "0b00";
 endmodule
 
 (* blackbox *)
