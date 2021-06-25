@@ -6,6 +6,7 @@ module serial_echo (
         input  clki,
 
         input click,
+        //output reg reset_o,
 
         inout  usb_dp,
         inout  usb_dn,
@@ -16,8 +17,9 @@ module serial_echo (
     assign clk_48mhz = clki; // FOMU use 48Mhz external clock
 
     // Generate reset signal
-    reg [5:0] reset_cnt = 0;
-    wire reset = ~reset_cnt[5];
+    reg [16:0] reset_cnt = 0;
+    wire reset = ~reset_cnt[10];
+    //wire reset_o = reset;
     always @(posedge clk_48mhz)
         reset_cnt <= reset_cnt + reset;
 
@@ -32,7 +34,7 @@ module serial_echo (
     reg        uart_out_ready;
 
     // Send text through the serial port
-    localparam DELAY_WIDTH = 16;
+    localparam DELAY_WIDTH = 20;
     reg [DELAY_WIDTH-1:0] delay;
     reg end_transmition;
 
@@ -49,7 +51,7 @@ module serial_echo (
                 // If char is not valid on UART, send it.
                 if (!uart_in_valid) begin
                         uart_in_valid <= 1;
-                        uart_in_data <= "R";
+                        uart_in_data <= click ? "-" : "*";
 
                  // If char not ready, but valid. End of transmision.
                 end else if (!uart_in_ready) begin
