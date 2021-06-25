@@ -6,7 +6,7 @@ module serial_echo (
         input  clki,
 
         input click,
-        //output reg reset_o,
+        output reg [2:0] key,
 
         inout  usb_dp,
         inout  usb_dn,
@@ -19,7 +19,6 @@ module serial_echo (
     // Generate reset signal
     reg [16:0] reset_cnt = 0;
     wire reset = ~reset_cnt[10];
-    //wire reset_o = reset;
     always @(posedge clk_48mhz)
         reset_cnt <= reset_cnt + reset;
 
@@ -73,6 +72,30 @@ module serial_echo (
         end
     end
 
+    // get keystroke from uart.
+    always @(posedge clk_48mhz) begin
+    // Reset.
+        if (reset) begin
+            uart_out_ready <= 0;
+        end else begin
+            // If char is not valid on UART, get it.
+            if (uart_out_valid) begin
+                if (uart_out_data == "r") begin
+                    key[2] <= ~key[2];
+                    uart_out_ready <= 1;
+                end else if (uart_out_data == "g") begin
+                    key[1] <= ~key[1];
+                    uart_out_ready <= 1;
+                end else if (uart_out_data == "b") begin
+                    key[0] <= ~key[0];
+                    uart_out_ready <= 1;
+                end else begin
+                    uart_out_ready <= 0;
+                end
+            end
+        end
+    end
+
     // usb uart - this instanciates the entire USB device.
     usb_uart uart (
         .clk_48mhz (clk_48mhz),
@@ -100,4 +123,3 @@ module serial_echo (
     assign usb_dp_pu = 1'b1;
 
 endmodule
-

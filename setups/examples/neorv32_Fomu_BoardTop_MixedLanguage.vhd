@@ -71,6 +71,7 @@ architecture neorv32_Fomu_BoardTop_MixedLanguage_rtl of neorv32_Fomu_BoardTop_Mi
       clki      : in std_logic;
 
       click     : in std_logic;
+      key       : out std_logic_vector(2 downto 0);
 
       usb_dp    : inout std_logic;
       usb_dn    : inout std_logic;
@@ -83,6 +84,7 @@ architecture neorv32_Fomu_BoardTop_MixedLanguage_rtl of neorv32_Fomu_BoardTop_Mi
   signal pll_clk  : std_logic;
 
   -- internal IO connection --
+  signal con_key    : std_logic_vector(2 downto 0);
   signal con_gpio_o : std_ulogic_vector(3 downto 0);
   signal con_pwm    : std_logic_vector(2 downto 0);
 
@@ -109,6 +111,7 @@ begin
     clki => clki,
 
     click => con_pwm(0),
+    key => con_key,
 
     usb_dp => usb_dp,
     usb_dn => usb_dn,
@@ -143,9 +146,9 @@ begin
   port map (
     CURREN   => '1',  -- I
     RGBLEDEN => '1',  -- I
-    RGB2PWM  => con_pwm(2),                   -- I - blue  - pwm channel 2
-    RGB1PWM  => con_pwm(1),                   -- I - red   - pwm channel 1
-    RGB0PWM  => con_pwm(0),                   -- I - green - pwm channel 0
+    RGB2PWM  => con_pwm(2) or con_key(0),       -- I - blue  - pwm channel 2
+    RGB1PWM  => con_pwm(1) or con_key(2),       -- I - red   - pwm channel 1
+    RGB0PWM  => con_pwm(0) or con_key(1),       -- I - green - pwm channel 0
     RGB2     => rgb(2),  -- O - blue
     RGB1     => rgb(1),  -- O - red
     RGB0     => rgb(0)   -- O - green
